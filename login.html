@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./assets/css/login.css">
+    <link rel="stylesheet" href="./assets/lib/layui/css/layui.css">
+    <script src="./assets/js/login.js"></script>
+    <script src="./assets/lib/jquery.js"></script>
+    <script src="./assets/lib/layui/layui.all.js"></script>
+</head>
+<body>
+    <!-- 头部标签 -->
+    <div class="layui-main">
+        <img src="./assets/images/logo.png" alt="">
+    </div>
+    <!-- 登录注册表单 -->
+    <div class="loginAndreg">
+        <!-- 表单标题 -->
+        <div class="title">
+        </div>
+        <!-- 登录表单 -->
+        <div class="login-box" >
+            <i class="layui-icon layui-icon-close" ></i>
+            <!-- d登录的表单 -->
+            <form class="layui-form" action="" id="form_login">
+                <!-- 用户名 -->
+                <div class="layui-form-item">
+                    <i class="layui-icon layui-icon-username"></i>   
+                    <input type="text" name="username" required  lay-verify="required|iphone|number" placeholder="用户名" autocomplete="off" class="layui-input">
+                </div>
+                <!-- 密码 -->
+                <div class="layui-form-item">
+                    <i class="layui-icon layui-icon-password"></i>   
+                    <input type="password" name="password" required  lay-verify="required|pwd"  placeholder="密码" autocomplete="off" class="layui-input">
+                </div>
+            
+                <div class="layui-form-item">   
+                    <button class="layui-btn layui-btn-fluid" lay-submit  lay-filter="formDemo">登录</button>
+                </div>
+            <a href="#" id="go_reg" class="links" >去注册账号</a>
+            </form>
+        </div>
+    <!-- 注册表单 -->
+        <div class="reg-box"  style="display: none;">
+            <form class="layui-form" action="" id="form_login">
+                <!-- 手机号 -->
+                <div class="layui-form-item">
+                    <i class="layui-icon layui-icon-cellphone-fine"></i>   
+                    <input type="text" name="title" required  lay-verify="required|iphone|number" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                </div>
+                <!-- 密码 -->
+                <div class="layui-form-item">
+                    <i class="layui-icon layui-icon-password"></i>   
+                    <input type="text" name="title" required  lay-verify="required|pwd" placeholder="密码" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-item ">
+                    <i class="layui-icon layui-icon-password"></i>   
+                    <input type="text" name="title" required  lay-verify="required" placeholder="确认密码" autocomplete="off" class="layui-input">
+                </div>
+            
+                <div class="layui-form-item ">
+                    <button class="layui-btn layui-btn-fluid" lay-submit  lay-filter="formDemo">登录</button>
+                </div>
+            <a href="#" id="go_login" class="links">去登录账号</a>
+            </form>
+        </div>
+    </div>
+<script>
+$(function(){
+$('#go_reg').on('click',function(){
+    $('.login-box').hide()
+    $('.reg-box').show();
+})
+$('#go_login').on('click',function(){
+    $('.login-box').show();
+    $('.reg-box').hide();
+})
+var form = layui.form
+// 以下为laiui特定的校验规则同时我们可以自定义我们想要的东西校验规则通常使用的是常用的正则表达式
+
+
+form.verify({
+    pwd:[
+    /^[\S]{6,12}$/
+    ,'密码必须6到12位，且不能出现空格'
+] ,
+iphone:[/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
+,'请填写正确的手机号'
+],
+repwd: function(value){
+var pwd = $('.reg-box [name=password]').val()
+if(pwd!==value){
+    return '密码不一致'}}
+})
+//监听注册事件
+// 获取点击事件
+$('#form_login').submit('submit',function(event){
+    event.preventDefault()
+    var data = {
+        username:$('form_reg [name=username]').val(),
+        password:$('form_reg [name=password]').val()
+    }
+    $.post('http://ajax.frontend.itheima.net/api/reguser',data,function(event){
+        if(res.status !==0){
+            return layer.msg(res.message)
+        }
+    })
+})
+//监听表单登录事件
+$('#form_login').submit(function(event){
+    event.preventDefault()
+    $.ajax({
+        url:'http://ajax.frontend.itheima.net/api/login',
+        method:'POST',
+        //快速拿到当前拼接的值
+        data:$(this).serialize(),
+        success:function(res){
+            if(res.status !==0){
+                return layer.msg('登录失败')
+            }
+            layer.msg('ok')
+            location.href = './index.html'
+            
+        }
+    })
+})
+
+})
+</script>
+
+</body>
+
+</html>
